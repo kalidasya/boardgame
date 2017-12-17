@@ -1,3 +1,4 @@
+playersTurn = 1
 texts = {
   'start': "START",
   'fight': "Fight a bad guy",
@@ -21,6 +22,7 @@ function findTileByName(name) {
 }
 fightF = function(player) {
   player.color(player._colorCode, 0.5);
+  player._ignore = true;
 }
 flyF = function(tileName){
   return function(player) {
@@ -41,6 +43,7 @@ winF = function(player) {
 }
 startF = function(player) {
   Crafty.log("START")
+  player._currentPos = 0;
 }
 tiles = [
   ['start', 0, 0, startF],
@@ -131,9 +134,9 @@ Game = {
     }
 
     Crafty.e('Player').at(0,0).text("Player1").setName('Player1').colorize(0)
-    // Crafty.e('Player').at(0,1).text("Player2").colorize(1)
-    // Crafty.e('Player').at(1,0).text("Player3").colorize(2)
-    // Crafty.e('Player').at(1,1).text("Player4").colorize(3)
+    Crafty.e('Player').at(0,1).text("Player2").setName('Player2').colorize(1)
+    Crafty.e('Player').at(1,0).text("Player3").setName('Player3').colorize(2)
+    Crafty.e('Player').at(1,1).text("Player4").setName('Player4').colorize(3)
     Crafty.e('Roll').attr({x:Game.width(), y:0}).text('Roll');
 
   }

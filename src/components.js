@@ -109,12 +109,18 @@ Crafty.c('Roll', {
     this.requires('2D, DOM, Color, Mouse, Text')
     .color('red')
     .bind('Click', function(MouseEvent){
-      res = getRandomInt(1, 7);
-      player = findEntityByName('Player', 'Player1');
-      player._currentPos += res
-      target = Crafty('Tile').get(player._currentPos)
-      player.x = target.x
-      player.y = target.y
+      player = findEntityByName('Player', 'Player' + playersTurn);
+      if (player._ignore) {
+        player._ignore = false;
+      } else {
+        res = getRandomInt(1, 7);
+        player._currentPos += res
+        target = Crafty('Tile').get(player._currentPos)
+        player.x = target.x
+        player.y = target.y
+      }
+      playersTurn += 1;
+      if (playersTurn > 4) playersTurn = 1;
     })
     .attr({w: 128, h:96})
     .textFont({ size: '20px', weight: 'bold' })
