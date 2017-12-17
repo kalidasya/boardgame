@@ -34,7 +34,7 @@ Crafty.c('Actor', {
 });
 Crafty.c('Tile', {
   init: function() {
-    this.requires('Actor, Color, Text')
+    this.requires('Actor, Color, Text, Delay')
       // .color('rgb(00, 00, FF)')
       // .color('none')
       .attr({w: 128, h:128})
@@ -46,13 +46,23 @@ Crafty.c('Tile', {
         "display":"flex",
         "justify-content":"center",
         "background-image": 'url("images/tile_big3.png")'
+      })
+      .onHit('Player', function(evt, first) {
+        if (!first) return;
+        tile = this;
+        e = evt[0].obj
+        if (tile !== undefined) {
+          if (tile.hasOwnProperty('_withPlayer')){
+            this.delay(function() {tile._withPlayer(e)}, 500);
+          }
+        }
       });
   },
 });
 
 Crafty.c('Player', {
   init: function() {
-    this.requires('Actor, Color, Text, Draggable')
+    this.requires('Actor, Color, Text')
       .attr({w: 64, h:64})
       .textFont({ size: '10px', weight: 'bold'})
       .textAlign('center')
@@ -63,26 +73,11 @@ Crafty.c('Player', {
         "border-radius": "30px",
         "border": "1px solid #73AD21",
       })
-      .bind('StartDrag ', function(evt) {
-        e = Crafty.findPointerEventTargetByComponent('Player', evt);
-        e.color(e._colorCode, 0.5);
-      })
-      .bind('StopDrag', function(evt) {
-        e = Crafty.findPointerEventTargetByComponent('Player', evt);
-        e.x = Math.max(evt.clientX - evt.clientX % 64, 0);
-        e.y = Math.max(evt.clientY - evt.clientY % 64, 0);
-        tile = Crafty.findPointerEventTargetByComponent('Tile', evt);
-        e.color(e._colorCode, 1);
-        if (tile !== undefined) {
-          if (tile.hasOwnProperty('_withPlayer')){
-            tile._withPlayer(e);
-          }
-        } else {
-          e.x = e._oldX;
-          e.y = e._oldY;
-        }
+      // .bind('StartDrag ', function(evt) {
+      //   e = Crafty.findPointerEventTargetByComponent('Player', evt);
+      //   e.color(e._colorCode, 0.5);
+      // })
 
-      });
   },
   colorize: function(num) {
     if (num == 0) {
@@ -102,15 +97,24 @@ Crafty.c('Player', {
       this.color('yellow')
       .css({color:'blue'});
     }
-  }
+  },
+  _currentPos : 0
 });
 //                     Crafty.trigger("PostRender"); // Post-render cleanup opportunity crafty.js 4431
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 Crafty.c('Roll', {
   init: function() {
     this.requires('2D, DOM, Color, Mouse, Text')
     .color('red')
     .bind('Click', function(MouseEvent){
-      alert('clicked', MouseEvent);
+      res = getRandomInt(1, 7);
+      player = findEntityByName('Player', 'Player1');
+      player._currentPos += res
+      target = Crafty('Tile').get(player._currentPos)
+      player.x = target.x
+      player.y = target.y
     })
     .attr({w: 128, h:96})
     .textFont({ size: '20px', weight: 'bold' })

@@ -7,14 +7,17 @@ texts = {
   'finish_fly': "Finish flying",
   'win': "Finish"
 }
-function findTileByName(name) {
+function findEntityByName(entity, name){
   var finish = null;
-  tiles = Crafty("Tile").get()
+  tiles = Crafty(entity).get()
   for (var i = 0; i < tiles.length; i++){
     if (tiles[i].getName() == name){
       return tiles[i];
     }
   }
+}
+function findTileByName(name) {
+  return findEntityByName('Tile', name)
 }
 fightF = function(player) {
   player.color(player._colorCode, 0.5);
@@ -34,8 +37,10 @@ gotoStartF = function(player) {
 finishFlyF = function(player) {
 }
 winF = function(player) {
+  alert("YOU WON!!!")
 }
 startF = function(player) {
+  Crafty.log("START")
 }
 tiles = [
   ['start', 0, 0, startF],
@@ -112,26 +117,23 @@ Game = {
     for (var i = 2; i < Game.map_grid.height; i+=2) {
       getTile(Game.map_grid.width-2, i)
     }
-    for (var i = 0; i < Game.map_grid.width-2; i+=2) {
+    for (var i = Game.map_grid.width-2; i >=0 ; i-=2) {
       getTile(i, Game.map_grid.height-2)
     }
-    for (var i = 4; i < Game.map_grid.height; i+=2) {
+    for (var i = Game.map_grid.height - 2; i >= 4; i-=2) {
       getTile(0, i)
     }
-    for (var i = 0; i < Game.map_grid.width-4; i+=2) {
+    for (var i = 2; i < Game.map_grid.width-4; i+=2) {
       getTile(i, 4)
     }
     for (var i = 4; i < Game.map_grid.height-6; i+=2) {
       getTile(Game.map_grid.width-6, i)
     }
-    // for (var i = 4; i < Game.map_grid.width-4; i+=2) {
-    //   getTile(i, Game.map_grid.height - 6)
-    // }
 
-    Crafty.e('Player').at(0,0).text("Player1").colorize(0)
-    Crafty.e('Player').at(0,1).text("Player2").colorize(1)
-    Crafty.e('Player').at(1,0).text("Player3").colorize(2)
-    Crafty.e('Player').at(1,1).text("Player4").colorize(3)
+    Crafty.e('Player').at(0,0).text("Player1").setName('Player1').colorize(0)
+    // Crafty.e('Player').at(0,1).text("Player2").colorize(1)
+    // Crafty.e('Player').at(1,0).text("Player3").colorize(2)
+    // Crafty.e('Player').at(1,1).text("Player4").colorize(3)
     Crafty.e('Roll').attr({x:Game.width(), y:0}).text('Roll');
 
   }
