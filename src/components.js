@@ -113,8 +113,10 @@ Crafty.c('Roll', {
       if (player._ignore) {
         player._ignore = false;
       } else {
-        res = getRandomInt(1, 7);
+        res = getRandomInt(1, 6);
+        alert('Rolled ' + res + ' for Player' + playersTurn + ' moving from '+ player._currentPos + ' to ' + (player._currentPos + res))
         player._currentPos += res
+        player.color(player._colorCode, 1);
         target = Crafty('Tile').get(player._currentPos)
         player.x = target.x
         player.y = target.y

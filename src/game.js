@@ -39,7 +39,10 @@ gotoStartF = function(player) {
 finishFlyF = function(player) {
 }
 winF = function(player) {
-  alert("YOU WON!!!")
+  alert("Player" + (playersTurn - 1) + " WON!!!")
+  Crafty('Player').get().forEach(function(e){
+    gotoStartF(e)
+  });
 }
 startF = function(player) {
   Crafty.log("START")
@@ -120,18 +123,22 @@ Game = {
     for (var i = 2; i < Game.map_grid.height; i+=2) {
       getTile(Game.map_grid.width-2, i)
     }
-    for (var i = Game.map_grid.width-2; i >=0 ; i-=2) {
+    for (var i = Game.map_grid.width-4; i >=0 ; i-=2) {
       getTile(i, Game.map_grid.height-2)
     }
-    for (var i = Game.map_grid.height - 2; i >= 4; i-=2) {
+    for (var i = Game.map_grid.height - 4; i >= 4; i-=2) {
       getTile(0, i)
     }
     for (var i = 2; i < Game.map_grid.width-4; i+=2) {
       getTile(i, 4)
     }
-    for (var i = 4; i < Game.map_grid.height-6; i+=2) {
+    for (var i = 6; i < Game.map_grid.height-6; i+=2) {
       getTile(Game.map_grid.width-6, i)
     }
+
+    // Crafty('Tile').get().forEach(function (e, i){
+    //   e.text(e.text() + i)
+    // });
 
     Crafty.e('Player').at(0,0).text("Player1").setName('Player1').colorize(0)
     Crafty.e('Player').at(0,1).text("Player2").setName('Player2').colorize(1)
