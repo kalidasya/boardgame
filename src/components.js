@@ -53,9 +53,15 @@ Crafty.c('Tile', {
         e = evt[0].obj
         if (tile !== undefined) {
           if (tile.hasOwnProperty('_withPlayer')){
-            this.delay(function() {tile._withPlayer(e)}, 500);
+              this.delay(function() {
+                try {
+                  tile._withPlayer(e)
+                } catch (asd) {
+                  Crafty.log("Player"+ e.text()  + " " + tile._withPlayer + " " + tile.text())
+                }
+              }, 500);
+            }
           }
-        }
       });
   },
 });
@@ -73,11 +79,6 @@ Crafty.c('Player', {
         "border-radius": "30px",
         "border": "1px solid #73AD21",
       })
-      // .bind('StartDrag ', function(evt) {
-      //   e = Crafty.findPointerEventTargetByComponent('Player', evt);
-      //   e.color(e._colorCode, 0.5);
-      // })
-
   },
   colorize: function(num) {
     if (num == 0) {
@@ -97,10 +98,14 @@ Crafty.c('Player', {
       this.color('yellow')
       .css({color:'blue'});
     }
+    return this;
+  },
+  setOffset: function(x, y){
+    this._offsetX = x;
+    this._offsetY = y;
   },
   _currentPos : 0
 });
-//                     Crafty.trigger("PostRender"); // Post-render cleanup opportunity crafty.js 4431
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -114,12 +119,15 @@ Crafty.c('Roll', {
         player._ignore = false;
       } else {
         res = getRandomInt(1, 6);
-        alert('Rolled ' + res + ' for Player' + playersTurn + ' moving from '+ player._currentPos + ' to ' + (player._currentPos + res))
+        console.log('Rolled ' + res + ' for Player' + playersTurn + ' moving from '+ player._currentPos + ' to ' + (player._currentPos + res))
         player._currentPos += res
+        if (player._currentPos >= Crafty('Tile').get().length) {
+           player._currentPos -= player._currentPos - Crafty('Tile').get().length + 2
+         }
         player.color(player._colorCode, 1);
         target = Crafty('Tile').get(player._currentPos)
-        player.x = target.x
-        player.y = target.y
+        player.x = target.x + player._offsetX * 64
+        player.y = target.y + player._offsetY * 64
       }
       playersTurn += 1;
       if (playersTurn > 4) playersTurn = 1;
@@ -135,5 +143,5 @@ Crafty.c('Roll', {
       // "padding": "20px",
       "border": "2px solid #73AD21",
     });
-  },
+  }
 });

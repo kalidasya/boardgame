@@ -9,7 +9,6 @@ texts = {
   'win': "Finish"
 }
 function findEntityByName(entity, name){
-  var finish = null;
   tiles = Crafty(entity).get()
   for (var i = 0; i < tiles.length; i++){
     if (tiles[i].getName() == name){
@@ -20,6 +19,16 @@ function findEntityByName(entity, name){
 function findTileByName(name) {
   return findEntityByName('Tile', name)
 }
+
+function findTileIndex(tile){
+  tiles = Crafty('Tile').get()
+  for (var i = 0; i < tiles.length; i++){
+    if (tiles[i] == tile){
+      return i;
+    }
+  }
+}
+
 fightF = function(player) {
   player.color(player._colorCode, 0.5);
   player._ignore = true;
@@ -33,16 +42,21 @@ flyF = function(tileName){
 }
 gotoStartF = function(player) {
   start = findTileByName('start')
-  player.x = start.x
-  player.y = start.y
+  player.x = start.x + player._offsetX * 64
+  player.y = start.y + player._offsetY * 64
+  player._currentPos = 0
 }
 finishFlyF = function(player) {
+  player._currentPos = findTileIndex(this);
 }
 winF = function(player) {
   alert("Player" + (playersTurn - 1) + " WON!!!")
   Crafty('Player').get().forEach(function(e){
     gotoStartF(e)
+    player._ignore = false;
+    player.color(player._colorCode, 1);
   });
+  playersTurn = 1
 }
 startF = function(player) {
   Crafty.log("START")
@@ -97,8 +111,6 @@ Game = {
     }
   },
 
-
-
   // The total width of the game screen. Since our grid takes up the entire screen
   //  this is just the width of a tile times the width of the grid
   width: function() {
@@ -140,10 +152,10 @@ Game = {
     //   e.text(e.text() + i)
     // });
 
-    Crafty.e('Player').at(0,0).text("Player1").setName('Player1').colorize(0)
-    Crafty.e('Player').at(0,1).text("Player2").setName('Player2').colorize(1)
-    Crafty.e('Player').at(1,0).text("Player3").setName('Player3').colorize(2)
-    Crafty.e('Player').at(1,1).text("Player4").setName('Player4').colorize(3)
+    Crafty.e('Player').at(0,0).text("Player1").setName('Player1').colorize(0).setOffset(0,0)
+    Crafty.e('Player').at(0,1).text("Player2").setName('Player2').colorize(1).setOffset(0,1)
+    Crafty.e('Player').at(1,0).text("Player3").setName('Player3').colorize(2).setOffset(1,0)
+    Crafty.e('Player').at(1,1).text("Player4").setName('Player4').colorize(3).setOffset(1,1)
     Crafty.e('Roll').attr({x:Game.width(), y:0}).text('Roll');
 
   }
